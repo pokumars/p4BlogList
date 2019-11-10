@@ -13,7 +13,18 @@ const totalLikes = (blogs) => {
   return blogs.reduce(reducer, 0);
 };
 
+const favoriteBlog = (blogs) => {
+  let mostLikes = 0;
+  blogs.map((b) => {
+    b.likes > mostLikes ? mostLikes = b.likes : mostLikes;
+  });
+
+  return blogs.find((b) => b.likes === mostLikes);
+
+};
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 };
