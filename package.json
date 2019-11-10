@@ -4,16 +4,17 @@
   "description": "list of blogs I like",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "watch": "nodemon index.js",
     "start": "node index.js",
     "lint:index": "node_modules/.bin/eslint index.js",
-    "lint":"eslint ."
+    "lint": "eslint ."
   },
   "author": "Oheneba Poku-Marboah",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^6.6.0",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.4"
   },
   "dependencies": {
@@ -21,5 +22,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.9"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
