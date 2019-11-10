@@ -4,6 +4,16 @@ const dummy = (blogs) => {
   }  
 };
 
+const totalLikes = (blogs) => {
+  const reducer = (acc, cur) => {
+    //console.log('current like ' + cur.likes + ' total is ----> ' + acc);
+    return acc + cur.likes;
+  };
+
+  return blogs.reduce(reducer, 0);
+};
+
 module.exports = {
-  dummy
+  dummy,
+  totalLikes
 };
