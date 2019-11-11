@@ -19,12 +19,81 @@ const favoriteBlog = (blogs) => {
     b.likes > mostLikes ? mostLikes = b.likes : mostLikes;
   });
 
-  return blogs.find((b) => b.likes === mostLikes);
+  if(blogs.length === 0){
+    return 'There are no blogs in the array';
+  }
 
+  return blogs.find((b) => b.likes === mostLikes);
+};
+
+const mostBlogs = (blogs) => {
+
+  let mf = 1;
+  let m = 0;
+  let item;
+  for (let i=0; i<blogs.length; i++)
+  {
+    for (let j=i; j<blogs.length; j++)
+    {
+      // eslint-disable-next-line eqeqeq
+      if (blogs[i].author == blogs[j].author)
+        
+        m++;
+      if (mf<m)
+      {
+        mf=m; 
+        item = blogs[i].author;
+      }
+    }
+    m=0;
+  }
+  console.log(`${item} ( ${mf} times ) `);
+  const res = {
+    author: item,
+    blogs: mf
+  };
+
+  if (blogs.length === 0) {
+    return 'Blog list was empty';
+  }
+  else if (res.author === undefined && res.blogs === 1) {
+    console.log('no author has more than 1');
+    res.author ='all authors have 1 blog';
+  }
+
+  console.log(` author --->${res.author} blogs ---> ${res.blogs}`);
+  return res;
+};
+
+const mostLikes = (blogs) => {
+  //put all unique authors in array
+  const authors = [];
+  blogs.map((b) => authors.indexOf(b.author) === -1 &&authors.push(b.author));
+
+  //make an object with name and number of accumulated likes for each author
+  const likeArr = authors.map((a) => {
+    const obj = {
+      'author': a,
+      'likes': 0
+    };
+    return obj;
+  });
+  //console.log(likeArr);
+
+  //add the likes to the correct author
+  blogs.map((b) => {
+    likeArr.find((auth) => auth.author === b.author).likes += b.likes;
+    //console.log(likeArr.find((auth) => auth.author === b.author));
+  });
+
+  //console.log(favoriteBlog(likeArr));
+  return favoriteBlog(likeArr);
 };
 
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs,
+  mostLikes
 };
