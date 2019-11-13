@@ -23,14 +23,17 @@ blogsRouter.get('/', async (request, response, next) => {
   }
 });
   
-blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body);
+blogsRouter.post('/', async (request, response, next) => {
   
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result);
-    });
+  try{
+    const blog = new Blog(request.body);
+    const result  =await  blog.save();
+    response.status(201).json(result.toJSON());
+
+  }
+  catch(exception){
+    next(exception);
+  }
 });
   
 

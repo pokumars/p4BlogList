@@ -50,12 +50,37 @@ describe('There are blogs in db already', () => {
   });
  
   
-  test('id is not undefined', async () => {
+  test('id is defined', async () => {
     const response = await api.get('/api/blogs');
-    response.map(b => expect(b).toBeDefined());
+    response.body.map(b => {
+      //b._id or b.xd or b.xy would fail so you know b.id actually is defined
+      expect(b.id).toBeDefined();
+    });
   });
 });
 
+describe('addition of a new note', () => {
+  test('notes increase by one and contains the correct note', async () => {
+    const newBlog = {
+      'title': 'How to Zlatan',
+      'author': 'Zlatan something',
+      'url': 'www.google.com',
+      'likes': 200,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
+
+    const titles = blogsAtEnd.map(b => b.title);
+    expect(titles).toContain('How to Zlatan');
+  });
+});
 
 
 afterAll(() => {
