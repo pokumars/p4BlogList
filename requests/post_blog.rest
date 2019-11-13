@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "A simple intro to Javascript imports and exports",
-	"author": "Jason Arnold",
-	"url": "https://medium.com/@thejasonfile/a-simple-intro-to-javascript-imports-and-exports-389dd53c3fac",
-	"likes": 4700
-}
+    "title": "Multithreading Javascript",
+    "author": "Max Peng",
+    "url": "https://medium.com/techtrument/multithreading-javascript-46156179cf9a",
+    "likes": 1800
+  }

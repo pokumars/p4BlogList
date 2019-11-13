@@ -26,12 +26,10 @@ beforeEach (async () => {
     .map(blog => new Blog(blog));
 
   const promiseArray = blogObjects.map(blog => blog.save());
-
   //Promise.all() method returns a single Promise that resolves 
   //when all of the promises passed as an iterable have resolved
   await Promise.all(promiseArray);
-
-  console.log('done');
+  
 });
 
 describe('There are blogs in db already', () => {
@@ -59,6 +57,29 @@ describe('There are blogs in db already', () => {
   });
 });
 
+describe('deleting of blogs', () => {
+  test('successfully delete an item', async () => {
+
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+    
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+
+    const blogsAtEnd= await helper.blogsInDb();
+
+    //list should be shorter by one
+    expect(blogsAtStart.length).toBe(blogsAtEnd.length + 1);
+
+    const titles = blogsAtEnd.map(b => b.title);
+
+    //that title should not exist in list
+    expect(titles).not.toContain(blogToDelete.title);
+
+  });
+});
+
 describe('addition of a new note', () => {
   test('notes increase by one and contains the correct note', async () => {
     const newBlog = {
@@ -79,6 +100,64 @@ describe('addition of a new note', () => {
 
     const titles = blogsAtEnd.map(b => b.title);
     expect(titles).toContain('How to Zlatan');
+  });
+
+  test('if likes value is missing give it a default of 0', async () => {
+    const newBlog = {
+      'title': 'How to grow',
+      'author': 'John Oliver',
+      'url': 'www.JohnOliver.com',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    //find the just added blog
+    const newestBlog = blogsAtEnd.find(b => b.title === newBlog.title);
+    expect(newestBlog.likes).toBe(0);
+  });
+
+  test('if title and url are missing status should be 400 Bad Request',async () => {
+    const newBlog = {
+      'author': 'Seth Godin',
+      'likes': 4700
+    };
+
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(400);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd.length).toBe(helper.initialBlogs.length);
+
+  });
+});
+
+describe('updating blogs', async () => {
+  test('update a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+
+    const replacement = {
+      'title': blogToUpdate.title,
+      'author': blogToUpdate.author,
+      'url': blogToUpdate.url,
+      'likes': 6000
+    };
+
+    await api.put(`/api/blogs/${blogToUpdate.id}`)
+      .send(replacement)
+      .expect(200);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect (blogsAtStart.length).toBe(blogsAtEnd.length);
+
+    const updatedBlog= blogsAtEnd.find(b => b.id === blogToUpdate.id);
+    expect(updatedBlog.likes).toBe(6000);
   });
 });
 

@@ -1,0 +1,11 @@
+PUT http://localhost:3003/api/blogs/5dcb7996f6ecd107d0120872
+content-type: application/json
+
+{
+"title": "A simple intro to Javascript imports and exports",
+"author": "Jason Arnold",
+"url": "https://medium.com/@thejasonfile/a-simple-intro-to-javascript-imports-and-exports-389dd53c3fac",
+"likes": 4702,
+"id": "5dcb7996f6ecd107d0120872"
+}
+
