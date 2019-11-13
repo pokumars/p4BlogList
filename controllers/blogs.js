@@ -10,12 +10,17 @@ blogsRouter.get('/info', (request, response) => {
   });
 });
   
-blogsRouter.get('/', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs);
-    });
+blogsRouter.get('/', async (request, response, next) => {
+  
+  try{
+    const blogs = await Blog.find({});
+
+    response.json(blogs);
+
+  }
+  catch(exception){
+    next(exception);
+  }
 });
   
 blogsRouter.post('/', (request, response) => {

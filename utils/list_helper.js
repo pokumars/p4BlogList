@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 const dummy = (blogs) => {
   if(blogs){
     return 1;
@@ -6,7 +8,7 @@ const dummy = (blogs) => {
 
 const totalLikes = (blogs) => {
   const reducer = (acc, cur) => {
-    //console.log('current like ' + cur.likes + ' total is ----> ' + acc);
+    //logger.info('current like ' + cur.likes + ' total is ----> ' + acc);
     return acc + cur.likes;
   };
 
@@ -47,7 +49,7 @@ const mostBlogs = (blogs) => {
     }
     m=0;
   }
-  console.log(`${item} ( ${mf} times ) `);
+  //logger.info(`${item} ( ${mf} times ) `);
   const res = {
     author: item,
     blogs: mf
@@ -57,11 +59,11 @@ const mostBlogs = (blogs) => {
     return 'Blog list was empty';
   }
   else if (res.author === undefined && res.blogs === 1) {
-    console.log('no author has more than 1');
+    logger.info('no author has more than 1');
     res.author ='all authors have 1 blog';
   }
 
-  console.log(` author --->${res.author} blogs ---> ${res.blogs}`);
+  logger.info(` author --->${res.author} blogs ---> ${res.blogs}`);
   return res;
 };
 
@@ -78,15 +80,15 @@ const mostLikes = (blogs) => {
     };
     return obj;
   });
-  //console.log(likeArr);
+  //logger.info(likeArr);
 
   //add the likes to the correct author
   blogs.map((b) => {
     likeArr.find((auth) => auth.author === b.author).likes += b.likes;
-    //console.log(likeArr.find((auth) => auth.author === b.author));
+    //logger.info(likeArr.find((auth) => auth.author === b.author));
   });
 
-  //console.log(favoriteBlog(likeArr));
+  //logger.info(favoriteBlog(likeArr));
   return favoriteBlog(likeArr);
 };
 
