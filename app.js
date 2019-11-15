@@ -24,6 +24,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(middleware.getTokenFrom);
 
 app.use(middleware.requestLogger);
 

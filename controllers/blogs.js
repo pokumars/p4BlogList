@@ -2,6 +2,7 @@ const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const logger = require('../utils/logger');
 
 blogsRouter.get('/info', (request, response) => {
   Blog.find({}).count((err, count) => {
@@ -44,29 +45,35 @@ blogsRouter.get('/:id', async (request, response, next) => {
 });
 
 blogsRouter.delete('/:id', async (request, response, next) => {
+  
   try{
+    const token = request.token;
+    const blogId = request.params.id;
+
     
-    await Blog.findByIdAndRemove(request.params.id);
-    response.status(204).end();
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+
+    //find the user making the post from db
+    const user = await User.findById(decodedToken.id);
+
+    const blogToBeDeleted = await Blog.findById(request.params.id);
+    logger.info('blogToBeDeleted ----->', blogToBeDeleted);
+    
+
+    if(blogToBeDeleted.user.toString() === user.id.toString()){
+      await Blog.findByIdAndRemove(blogId);
+      response.status(204).end();
+    }    
   }
   catch(exception){
     next(exception);
   }
 });
 
-const getTokenFrom= (request) => {
-  const authorization = request.get('authorization');
-
-  if(authorization && authorization.toLowerCase().startsWith('bearer ')){
-    return authorization.substring(7);
-  }
-  return null;
-};
-
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body;
-  const token =getTokenFrom(request);
-
+  //const token =getTokenFrom(request);
+  const token =request.token;
   
   try{
     //jwt.verify Returns the payload decoded if the signature is valid. If not, it will throw the error
@@ -77,11 +84,7 @@ blogsRouter.post('/', async (request, response, next) => {
       return response.status(401).json({ error: 'token missing or invalid' });
     }
 
-    console.log('decodedToken.id ----> ', decodedToken.id);
-    console.log(body.user);
     const user = await User.findById(decodedToken.id);
-
-    console.log(user);
 
     const blog = new Blog({
       'title': body.title,

@@ -137,7 +137,7 @@ describe('addition of a new note', () => {
   });
 });
 
-describe('updating blogs', async () => {
+describe('updating blogs', () => {
   test('update a blog', async () => {
     const blogsAtStart = await helper.blogsInDb();
     const blogToUpdate = blogsAtStart[0];
