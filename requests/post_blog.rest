@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "Multithreading Javascript",
-    "author": "Max Peng",
-    "url": "https://medium.com/techtrument/multithreading-javascript-46156179cf9a",
+    "title": "CR7 goat",
+    "author": "Max payne",
+    "url": "https://thesunsucks.com",
     "likes": 1800
   }

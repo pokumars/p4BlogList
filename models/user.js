@@ -9,10 +9,14 @@ const userSchema = mongoose.Schema({
     required: true
   },
   passwordHash: {
-    type: String,
-    required: true
+    type: String
   },
-  name:String
+  name:String,
+  blogs: [{
+    //The type of the field is ObjectId that references blog-style documents
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog'
+  }]
 });
 
 userSchema.plugin(uniqueValidator);
