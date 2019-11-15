@@ -8,9 +8,7 @@ const userSchema = mongoose.Schema({
     minLength: 3,
     required: true
   },
-  passwordHash: {
-    type: String
-  },
+  passwordHash:String,
   name:String,
   blogs: [{
     //The type of the field is ObjectId that references blog-style documents

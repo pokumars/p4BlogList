@@ -11,7 +11,7 @@ const api = supertest(app);
 beforeEach(async () => {
   await User.deleteMany({});
   //create one test user
-  const user = new User({ username: 'test1', password:'salakala' });
+  const user = new User({ username: 'test1', name: 'Jimmy choo', password:'salakala' });
 
   await user.save();
 });

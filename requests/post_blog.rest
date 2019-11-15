@@ -6,4 +6,4 @@ content-type: application/json
     "author": "Max payne",
     "url": "https://thesunsucks.com",
     "likes": 1800
-  }
+}
