@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/info', (request, response) => {
   Blog.find({}).count((err, count) => {
@@ -53,34 +54,48 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   }
 });
 
+const getTokenFrom= (request) => {
+  const authorization = request.get('authorization');
+
+  if(authorization && authorization.toLowerCase().startsWith('bearer ')){
+    return authorization.substring(7);
+  }
+  return null;
+};
 
 blogsRouter.post('/', async (request, response, next) => {
+  const body = request.body;
+  const token =getTokenFrom(request);
+
   
   try{
-    const users = await User.find({});
-    const id = users[0]._id;
+    //jwt.verify Returns the payload decoded if the signature is valid. If not, it will throw the error
+    //The object decoded from the token contains the username and id fields, which tells the server who made the request
+    const decodedToken = jwt.verify(token, process.env.SECRET);
 
-    //const body = request.body;
-    //const user = await User.findById(body.user);
-    const user = await User.findById(id);
+    if(!token || !decodedToken.id){
+      return response.status(401).json({ error: 'token missing or invalid' });
+    }
 
+    console.log('decodedToken.id ----> ', decodedToken.id);
+    console.log(body.user);
+    const user = await User.findById(decodedToken.id);
 
-    const blog = new Blog(
-      {
-        'title': request.body.title,
-        'author' : request.body.author,
-        'url': request.body.url,
-        'likes': request.body.likes || 0,
-        'user': user.id
-      }
-    );
+    console.log(user);
+
+    const blog = new Blog({
+      'title': body.title,
+      'author' : body.author,
+      'url': body.url,
+      'likes': body.likes || 0,
+      'user': user._id
+    });
 
     const savedBlog  =await  blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
 
     response.status(201).json(savedBlog.toJSON());
-
   }
   catch(exception){
     next(exception);
