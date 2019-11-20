@@ -45,6 +45,17 @@ describe('creating users', () => {
       password: 'secreto',
     };
 
+    /*const newUser = {
+      "username": "daenerys",
+      "password": "daenerys",
+    };*/
+
+    /**{
+      "username" : "mojo",
+      "password": "chelsea2005",
+      "name": "Jose Mourinho"
+    } */
+
     await api
       .post('/api/users')
       .send(newUser)
