@@ -30,7 +30,10 @@ blogsRouter.get('/', async (request, response, next) => {
 blogsRouter.get('/:id', async (request, response, next) => {
   try{
 
-    const blog = await Blog.findById(request.params.id);
+    const blog = await Blog
+      .findById(request.params.id)
+      .populate('user', { username:1, name:1 });
+      
     if(blog) {
       response.json(blog.toJSON());
     }
@@ -59,11 +62,21 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     const blogToBeDeleted = await Blog.findById(request.params.id);
     logger.info('blogToBeDeleted ----->', blogToBeDeleted);
     
-
     if(blogToBeDeleted.user.toString() === user.id.toString()){
+
       await Blog.findByIdAndRemove(blogId);
+
+      //remove blog form user's list of blogs
+      user.blogs = user.blogs.filter((b) => b.toString() !== blogToBeDeleted._id.toString());
+      console.log('updated user, blogs should be empty',user);
+      await user.save();
+
+      // and then a user.overwrite
+      //await user.overwrite()
+
+      console.log('successful delete');
       response.status(204).end();
-    }    
+    }
   }
   catch(exception){
     next(exception);

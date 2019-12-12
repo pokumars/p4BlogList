@@ -2,10 +2,18 @@ const logger = require('../utils/logger');
 
 //we shall make our own middleware to log stuff
 const requestLogger = (request, response, next) => {
+  /*if(request.path !== '/api/login' ) {
+    logger.info('Method:', request.method);
+    logger.info('Path:  ', request.path);
+    logger.info('Body:  ', request.body);
+    logger.info('---');
+  }*/
+
   logger.info('Method:', request.method);
   logger.info('Path:  ', request.path);
-  logger.info('Body:  ', request.body);
+  request.path !== '/api/login' && logger.info('Body:  ', request.body);
   logger.info('---');
+  
 
   next();
 };
