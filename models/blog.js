@@ -18,8 +18,7 @@ const blogSchema = mongoose.Schema({
     ref: 'user'
   },
   comments: [{
-    type:String,
-    minLength: 2
+    content:{ type:String, minLength: 2 }
   }]
 });
 
