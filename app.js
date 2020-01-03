@@ -23,6 +23,9 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 app.use(cors());
+
+//serves static pages from build directory when end point is / or /index.html
+app.use(express.static('build'));
 app.use(bodyParser.json());
 app.use(middleware.getTokenFrom);
 
@@ -31,6 +34,11 @@ app.use(middleware.requestLogger);
 app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginrouter);
+
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter= require('./controllers/testing');
+  app.use('/api/testing',testingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
